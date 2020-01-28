@@ -1,0 +1,1 @@
+Criando uma aplicação para armazenar projetos e suas tarefas do zero utilizando Express. Serão usadas Rotas(GET, POST, PUT e DELETE),e Middlewares para criação da API.
