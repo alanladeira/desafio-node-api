@@ -5,9 +5,10 @@ const server = express()
 server.use(express.json())
 
 const projects = []
-let reqCount = 0
 
-
+/**
+ * Middleware que checa se o projeto existe
+ */
 function verifyId(req, res, next){
   const { id } = req.params
 
@@ -15,25 +16,42 @@ function verifyId(req, res, next){
     return res.status(400).json('Id dont exists')
   }
 
-  next()
+  return next()
 }
 
-server.use('/projects', (req, res, next)=>{
-  console.log(reqCount)
+/**
+ * Middleware que dá log no número de requisições
+ */
+function logRequests(req, res, next) {
 
-  next()
-})
+  console.count("Número de requisições");
 
+  return next();
+}
+
+server.use(logRequests)
+
+/**
+ * Cadastra novos projetos
+ */
 server.post('/projects', (req, res)=>{
-  const { id, title, tasks } = req.body
+  const { id, title } = req.body
 
-  reqCount+=1
+  const project = {
+    id,
+    title,
+    tasks: []
+  }
 
-  projects.push({id, title, tasks})
+  projects.push(project)
 
-  return res.json(projects)
+  //retorna o projeto cadastrado
+  return res.json(project)
 })
 
+/**
+ * Retorna todos os projetos
+ */
 server.get('/projects', (req, res)=>{
 
   reqCount+=1
@@ -41,6 +59,9 @@ server.get('/projects', (req, res)=>{
   return res.json(projects)
 })
 
+/**
+ * Altera os projetos pelo id passado
+ */
 server.put('/projects/:id', verifyId, (req, res)=>{
   const { id } = req.params
   const { title } = req.body
@@ -52,14 +73,21 @@ server.put('/projects/:id', verifyId, (req, res)=>{
   return res.json(projects)
 })
 
+/**
+ * Deleta os projetos pelo id passado
+ */
 server.delete('/projects/:id', verifyId, (req, res)=>{
   const { id } = req.params
 
   projects.splice(id, 1)
 
-  return res.send('User has been deleted')
+  //por boa pratica de codigo o delete nao retorna nada
+  return res.send()
 })
 
+/**
+ * Cadastra Tarefas nos projetos especificados pelo id
+ */
 server.post('/projects/:id/tasks', verifyId, (req, res)=>{
   const { id } = req.params
   const { title } = req.body
@@ -68,7 +96,7 @@ server.post('/projects/:id/tasks', verifyId, (req, res)=>{
 
   projects[id].tasks.push(title)
 
-  return res.json(projects)
+  return res.json(project)
 })
 
 server.listen(3000)
