@@ -11,8 +11,9 @@ const projects = []
  */
 function verifyId(req, res, next){
   const { id } = req.params
+  const project = projects.find((el)=>el.id == id)
 
-  if(!projects[id]){
+  if(!project){
     return res.status(400).json('Id dont exists')
   }
 
