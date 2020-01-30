@@ -24,7 +24,7 @@ function verifyId(req, res, next){
  */
 function logRequests(req, res, next) {
 
-  console.count("Número de requisições");
+  console.count("Número de requisições: ");
 
   return next();
 }
@@ -53,9 +53,7 @@ server.post('/projects', (req, res)=>{
  * Retorna todos os projetos
  */
 server.get('/projects', (req, res)=>{
-
-  reqCount+=1
-
+  
   return res.json(projects)
 })
 
@@ -66,9 +64,9 @@ server.put('/projects/:id', verifyId, (req, res)=>{
   const { id } = req.params
   const { title } = req.body
 
-  reqCount+=1
+  const project = projects.find((el)=>el.id == id)
 
-  projects[id].title = title
+  project.title=title
 
   return res.json(projects)
 })
@@ -79,7 +77,9 @@ server.put('/projects/:id', verifyId, (req, res)=>{
 server.delete('/projects/:id', verifyId, (req, res)=>{
   const { id } = req.params
 
-  projects.splice(id, 1)
+  const index = projects.findIndex((el)=> el.id == id)  
+
+  projects.splice(index, 1)
 
   //por boa pratica de codigo o delete nao retorna nada
   return res.send()
@@ -92,9 +92,9 @@ server.post('/projects/:id/tasks', verifyId, (req, res)=>{
   const { id } = req.params
   const { title } = req.body
 
-  reqCount+=1
+  const project = projects.find((el)=> el.id == id)
 
-  projects[id].tasks.push(title)
+  project.tasks.push(title)
 
   return res.json(project)
 })
