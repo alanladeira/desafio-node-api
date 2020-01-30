@@ -1,6 +1,7 @@
 const { Router } = require("express")
 
 const userController = require('./controllers/userController')
+const taskController = require('./controllers/taskController')
 
 const routes = Router()
 
@@ -39,15 +40,6 @@ routes.delete('/projects/:id', userController.verifyId, userController.delete)
 /**
  * Cadastra Tarefas nos projetos especificados pelo id
  */
-routes.post('/projects/:id/tasks', userController.verifyId, (req, res)=>{
-  const { id } = req.params
-  const { title } = req.body
-
-  const project = projects.find((el)=> el.id == id)
-
-  project.tasks.push(title)
-
-  return res.json(project)
-})
-
+routes.post('/projects/:id/tasks', userController.verifyId, taskController.store)
+  
 module.exports = routes

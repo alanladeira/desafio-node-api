@@ -1,4 +1,4 @@
-const projects = []
+const projects = require('../utils/projects')
 
 module.exports = {
   /**
